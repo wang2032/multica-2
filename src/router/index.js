@@ -28,11 +28,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const { state } = useUserStore()
+  const { isLoggedIn } = useUserStore()
 
-  if (to.meta.requiresAuth && !state.isLoggedIn) {
+  if (to.meta.requiresAuth && !isLoggedIn.value) {
     next('/login')
-  } else if (to.path === '/login' && state.isLoggedIn) {
+  } else if (to.path === '/login' && isLoggedIn.value) {
     next('/')
   } else {
     next()

@@ -2,9 +2,10 @@ import { ref, computed, reactive } from 'vue'
 
 const state = reactive({
   user: null,
-  token: localStorage.getItem('token') || '',
-  isLoggedIn: computed(() => !!localStorage.getItem('token'))
+  token: localStorage.getItem('token') || ''
 })
+
+const isLoggedIn = computed(() => !!state.token)
 
 const defaultUsers = [
   { id: 1, username: 'admin', password: 'admin123', name: '管理员', role: 'admin' },
@@ -59,7 +60,7 @@ export function useUserStore() {
 
   checkAuth()
 
-  return { state, login, register, logout }
+  return { state, isLoggedIn, login, register, logout }
 }
 
 export default useUserStore
