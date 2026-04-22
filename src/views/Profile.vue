@@ -19,7 +19,7 @@
     <el-container>
       <el-header>
         <div class="header-content">
-          <h3>欢迎, {{ userStore.user?.name }}</h3>
+          <h3>欢迎, {{ state.user?.name }}</h3>
           <el-button type="danger" size="small" @click="handleLogout">退出登录</el-button>
         </div>
       </el-header>
@@ -36,14 +36,14 @@
                 </template>
                 <el-descriptions :column="1" border>
                   <el-descriptions-item label="用户名">
-                    {{ userStore.user?.username }}
+                    {{ state.user?.username }}
                   </el-descriptions-item>
                   <el-descriptions-item label="昵称">
-                    {{ userStore.user?.name }}
+                    {{ state.user?.name }}
                   </el-descriptions-item>
                   <el-descriptions-item label="角色">
-                    <el-tag :type="userStore.user?.role === 'admin' ? 'danger' : 'success'">
-                      {{ userStore.user?.role === 'admin' ? '管理员' : '普通用户' }}
+                    <el-tag :type="state.user?.role === 'admin' ? 'danger' : 'success'">
+                      {{ state.user?.role === 'admin' ? '管理员' : '普通用户' }}
                     </el-tag>
                   </el-descriptions-item>
                 </el-descriptions>
@@ -100,10 +100,10 @@
 import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import useUserStore from '../stores/user'
+import { useUserStore } from '../stores/user'
 
 const router = useRouter()
-const userStore = useUserStore()
+const { state, logout } = useUserStore()
 const activeMenu = ref('/profile')
 const pwdFormRef = ref(null)
 
@@ -154,7 +154,7 @@ const handleChangePwd = async () => {
 }
 
 const handleLogout = () => {
-  userStore.logout()
+  logout()
   router.push('/login')
 }
 </script>

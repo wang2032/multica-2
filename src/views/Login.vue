@@ -87,10 +87,10 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import useUserStore from '../stores/user'
+import { useUserStore } from '../stores/user'
 
 const router = useRouter()
-const userStore = useUserStore()
+const { login, register } = useUserStore()
 
 const activeTab = ref('login')
 const loginFormRef = ref(null)
@@ -126,7 +126,7 @@ const handleLogin = async () => {
   if (!loginFormRef.value) return
   try {
     await loginFormRef.value.validate()
-    const result = userStore.login(loginForm.username, loginForm.password)
+    const result = login(loginForm.username, loginForm.password)
     if (result.success) {
       ElMessage.success('登录成功')
       router.push('/')
@@ -142,7 +142,7 @@ const handleRegister = async () => {
   if (!registerFormRef.value) return
   try {
     await registerFormRef.value.validate()
-    const result = userStore.register(
+    const result = register(
       registerForm.username,
       registerForm.password,
       registerForm.name

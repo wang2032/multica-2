@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import useUserStore from '../stores/user'
+import { useUserStore } from '../stores/user'
 
 const routes = [
   {
@@ -13,6 +13,12 @@ const routes = [
     name: 'Home',
     component: () => import('../views/Home.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 
@@ -22,11 +28,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const userStore = useUserStore()
+  const { state } = useUserStore()
 
-  if (to.meta.requiresAuth && !userStore.isLoggedIn) {
+  if (to.meta.requiresAuth && !state.isLoggedIn) {
     next('/login')
-  } else if (to.path === '/login' && userStore.isLoggedIn) {
+  } else if (to.path === '/login' && state.isLoggedIn) {
     next('/')
   } else {
     next()

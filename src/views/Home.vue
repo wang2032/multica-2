@@ -19,7 +19,7 @@
     <el-container>
       <el-header>
         <div class="header-content">
-          <h3>欢迎, {{ userStore.user?.name }}</h3>
+          <h3>欢迎, {{ state.user?.name }}</h3>
           <el-button type="danger" size="small" @click="handleLogout">退出登录</el-button>
         </div>
       </el-header>
@@ -97,11 +97,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import useUserStore from '../stores/user'
+import { useUserStore } from '../stores/user'
 import BookDialog from '../components/BookDialog.vue'
 
 const router = useRouter()
-const userStore = useUserStore()
+const { state, logout } = useUserStore()
 
 const activeMenu = ref('/')
 const searchKeyword = ref('')
@@ -207,7 +207,7 @@ const handleSubmit = (bookData) => {
 }
 
 const handleLogout = () => {
-  userStore.logout()
+  logout()
   router.push('/login')
 }
 

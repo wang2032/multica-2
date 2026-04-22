@@ -1,24 +1,24 @@
-import { ref, computed } from 'vue'
-import { createGlobalState } from '@vueuse/core'
+import { ref, computed, reactive } from 'vue'
 
-const useUserStore = createGlobalState(() => {
-  const user = ref(null)
-  const token = ref(localStorage.getItem('token') || '')
+const state = reactive({
+  user: null,
+  token: localStorage.getItem('token') || '',
+  isLoggedIn: computed(() => !!localStorage.getItem('token'))
+})
 
-  const defaultUsers = [
-    { id: 1, username: 'admin', password: 'admin123', name: '管理员', role: 'admin' },
-    { id: 2, username: 'user', password: 'user123', name: '普通用户', role: 'user' }
-  ]
+const defaultUsers = [
+  { id: 1, username: 'admin', password: 'admin123', name: '管理员', role: 'admin' },
+  { id: 2, username: 'user', password: 'user123', name: '普通用户', role: 'user' }
+]
 
-  const isLoggedIn = computed(() => !!token.value)
-
+export function useUserStore() {
   const login = (username, password) => {
     const found = defaultUsers.find(u => u.username === username && u.password === password)
     if (found) {
       const { password: _, ...userInfo } = found
-      user.value = userInfo
-      token.value = `token_${Date.now()}_${username}`
-      localStorage.setItem('token', token.value)
+      state.user = userInfo
+      state.token = `token_${Date.now()}_${username}`
+      localStorage.setItem('token', state.token)
       localStorage.setItem('user', JSON.stringify(userInfo))
       return { success: true }
     }
@@ -42,8 +42,8 @@ const useUserStore = createGlobalState(() => {
   }
 
   const logout = () => {
-    user.value = null
-    token.value = ''
+    state.user = null
+    state.token = ''
     localStorage.removeItem('token')
     localStorage.removeItem('user')
   }
@@ -52,14 +52,14 @@ const useUserStore = createGlobalState(() => {
     const storedUser = localStorage.getItem('user')
     const storedToken = localStorage.getItem('token')
     if (storedUser && storedToken) {
-      user.value = JSON.parse(storedUser)
-      token.value = storedToken
+      state.user = JSON.parse(storedUser)
+      state.token = storedToken
     }
   }
 
   checkAuth()
 
-  return { user, token, isLoggedIn, login, register, logout }
-})
+  return { state, login, register, logout }
+}
 
 export default useUserStore
